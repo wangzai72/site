@@ -1,1 +1,65 @@
-my first page
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Cube with Red, Blue, and Yellow</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .cube {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            transform-style: preserve-3d;
+            transform: rotateX(30deg) rotateY(30deg);
+        }
+        .face {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border: 1px solid #000;
+        }
+        .front {
+            background-color: red;
+            transform: translateZ(100px);
+        }
+        .back {
+            background-color: blue;
+            transform: translateZ(-100px) rotateY(180deg);
+        }
+        .right {
+            background-color: yellow;
+            transform: rotateY(90deg) translateZ(100px);
+        }
+        .left {
+            background-color: blue; /* 左面改为蓝色 */
+            transform: rotateY(-90deg) translateZ(100px);
+        }
+        .top {
+            background-color: blue;
+            transform: rotateX(90deg) translateZ(100px);
+        }
+        .bottom {
+            background-color: yellow;
+            transform: rotateX(-90deg) translateZ(100px);
+        }
+    </style>
+</head>
+<body>
+    <div class="cube">
+        <div class="face front"></div>
+        <div class="face back"></div>
+        <div class="face right"></div>
+        <div class="face left"></div>
+        <div class="face top"></div>
+        <div class="face bottom"></div>
+    </div>
+</body>
+</html>
