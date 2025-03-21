@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        @keyframes fly {
+            from {
+                top: 400px;
+            }
+
+            to {
+                top: 0px;
+            }
+        }
+
+       .circle {
+            border-radius: 50%;
+            position: absolute;
+        }
+    </style>
+</head>
+
+<body>
+    <script>
+        function makeballoon(color) {
+            let b = document.createElement('div');
+            b.className = 'circle';
+            b.style.backgroundColor = color;
+            // 随机生成初始大小，让宽度和高度不同以形成椭圆形
+            let width = Math.floor(Math.random() * 50) + 30;
+            let height = Math.floor(Math.random() * 30) + 20; 
+            b.style.width = width + 'px';
+            b.style.height = height + 'px';
+            // 扩大水平方向的随机范围，让气球分布更分散
+            b.style.left = Math.floor(Math.random() * (window.innerWidth - width)) + 'px';
+            b.style.top = 400 + 'px';
+            b.style.animation = 'fly 10s 1';
+            document.body.appendChild(b);
+            // 每隔一段时间改变大小和颜色
+            setInterval(() => {
+                let newWidth = Math.floor(Math.random() * 50) + 30;
+                let newHeight = Math.floor(Math.random() * 30) + 20;
+                b.style.width = newWidth + 'px';
+                b.style.height = newHeight + 'px';
+                let colors = ['red', 'blue', 'green', 'yellow', 'purple'];
+                let randomColorIndex = Math.floor(Math.random() * colors.length);
+                b.style.backgroundColor = colors[randomColorIndex];
+            }, 1000);
+        }
+
+        // 创建10个气球
+        for (let i = 0; i < 10; i++) {
+            let randomColorIndex = Math.floor(Math.random() * 5);
+            let colors = ['red', 'blue', 'green', 'yellow', 'purple'];
+            makeballoon(colors[randomColorIndex]);
+        }
+    </script>
+</body>
+
+</html>    
