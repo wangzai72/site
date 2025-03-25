@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <script>
+    var a_str = prompt("请输入系数a");
+    var b_str = prompt("请输入系数b");
+    var c_str = prompt("请输入系数c");
+    var a = parseFloat(a_str);
+    var b = parseFloat(b_str);
+    var c = parseFloat(c_str);
+    var delta = b * b - 4 * a * c;
+    var x1 = (-b + Math.sqrt(delta)) / (2 * a);
+    var x2 = (-b - Math.sqrt(delta)) / (2 * a);
+    alert("方程的根为x1 = " + x1 + "，x2 = " + x2);
+    console.log("方程的根为x1 = " + x1 + "，x2 = " + x2);
+  </script>
+</body>
+</html>
