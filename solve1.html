@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quadratic Equation Solver</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .input-container {
+            margin-bottom: 10px;
+        }
+
+        input {
+            width: 50px;
+            margin: 0 5px;
+        }
+
+        #solution {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Quadratic Equation Solver</h1>
+    <div class="input-container">
+        <span>x<sup>2</sup> + </span>
+        <input type="number" id="b" value="0">
+        <span>x + </span>
+        <input type="number" id="c" value="0">
+        <span> = 0</span>
+    </div>
+    <button onclick="solveEquation()">Solve</button>
+    <div id="solution">Solution area</div>
+
+    <script>
+        function solveEquation() {
+            const a = 1;
+            const b = parseFloat(document.getElementById('b').value);
+            const c = parseFloat(document.getElementById('c').value);
+
+            const discriminant = b * b - 4 * a * c;
+
+            let solutionText = '';
+
+            if (discriminant > 0) {
+                const x1 = (-b + Math.sqrt(discriminant)) / (2 * a);
+                const x2 = (-b - Math.sqrt(discriminant)) / (2 * a);
+                solutionText = `x1 = ${x1.toFixed(2)}, x2 = ${x2.toFixed(2)}`;
+            } else if (discriminant === 0) {
+                const x = -b / (2 * a);
+                solutionText = `x = ${x.toFixed(2)}`;
+            } else {
+                const realPart = -b / (2 * a);
+                const imaginaryPart = Math.sqrt(-discriminant) / (2 * a);
+                solutionText = `x1 = ${realPart.toFixed(2)} + ${imaginaryPart.toFixed(2)}i, x2 = ${realPart.toFixed(2)} - ${imaginaryPart.toFixed(2)}i`;
+            }
+
+            document.getElementById('solution').innerHTML = solutionText;
+        }
+    </script>
+</body>
+
+</html>
+    
