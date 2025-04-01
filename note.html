@@ -1,0 +1,79 @@
+arithmeic operator:+,-,*,/,%,**，typeof, ~~,+=,
+-=,/=
+bitwise operator: & , | , ~ ,
+comparison operator:> ,>= ,== ,=== ,!= , !==,
+logical operator: &&, ||, !
+
+selecton: 1-way, 2-way, multi-way:switch-case-break-defult
+
+loop:for(I,T,U)S,   while(T){S,U},
+do while:I,do{S,U}while{T};
+
+the "break"key word in loop control:
+virtual infinite loop:while true  f(;;)=f(;true;)
+Each iteration contains a conditional break
+let i = 1,s=0;
+while(true)
+{     s+=i++;(s=s+i;i=i+1;);
+       if(i == 11)break;
+}
+
+The "continue"key word in loop control:
+nice comparison:"break"= drop out college
+but "continue"= leave but welcome back
+current iteration,and go on to the next iteration
+
+for(;;)
+{
+	Task 1;
+	if(T)
+	{
+            Task 2;
+	}
+}
+
+rewirte to
+for(;;)
+{
+	Task 1;
+	if(!T)continue:
+	Task 2;
+}
+
+add all even numbers in [0,100]
+s = 0,i = 0;
+for(;;)
+{
+	if(i %2 == 0)
+	s += i;
+ 	i++;
+	if (i>100)break;
+}
+for(;;)
+{
+	if(i %2 == 1){i++;continue;}
+	s += i;
+ 	i+=2;
+	if (i>100)break;
+}
+
+List in javascript == C's array + linked list
+resizable,dynamic
+let a=[];
+let b=[1,3,4];
+let c = new Array(10);//]null,null,null,...]
+
+add on tail: a.push(2);
+remove from tail:let y=a.pop()
+remove from middle:a.splice(startingindex,
+numberOfelements TobeRemoved),e.g,
+a.splice(2,4);//starting from index 2,remove 4 elements
+insert into somewhere in middle:
+a.splice(2,0,4);
+
+To make dynamic web sontents,
+let str = "<div";
+str+=a1;
+str+=b2;
+str+="dfgfgf";
+let hemlcode = str.join("")
