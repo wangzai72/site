@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>显示代码</title>
+    <style>
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ccc;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <pre>
+&lt;html&gt;
+&lt;body&gt;
+&lt;/body&gt;
+&lt;style&gt;
+
+@keyframes fly
+{
+      from  {top:700px}
+      to   {top:0px}
+}
+&lt;/style&gt;
+&lt;script&gt;
+
+function Balloon(color1,diameter,speed)
+{
+     this.color = color1;
+     this.diameter = diameter;
+     this.speed = speed;
+     this.id = id;
+     this.make = function()
+     {
+          let dv = document.createElement('div');
+          dv.id = 'b' + id;
+          dv.style.cssText = 'width:' + diameter +
+'px;height' + diameter +'px;border-radius:'+
+(diameter/2) + 'px;background-color:' + this.color;
++ ';position:absolute;left:' +(id*50) +
+'px;top:700px';
+          dv.innerHTML =''+ this.id
+           document.body.appendChild(dv);
+     }
+     this.rise = function()
+     {
+               let  dv = document.getElementById('b' + this.id);
+               dv.style.animationName = "fly";
+               dv.style.animationDuration = ~~(700/this.speed)
++ 's' ;
+     }
+}
+let r =(''+(Math.random()*1000000)).replace(/\..*$/,'');
+let s =mATH.RANDOM()*200;
+let w =(Math.random()*200 +30);
+let b = new Ballloon(i ,'#' + r,w , s);
+b.make();
+b.rise();
+&lt;/script&gt;
+    </pre>
+</body>
+
+</html>
+    
