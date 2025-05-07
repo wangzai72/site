@@ -1,0 +1,217 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>太阳系模型</title>
+    <style>
+        body { margin: 0; overflow: hidden; background: #000; color: #fff; font-family: Arial, sans-serif; }
+        canvas { display: block; }
+        #tableContainer {
+            display: none;
+            position: absolute;
+            top: 50px;
+            left: 50px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            border-radius: 5px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        table { border-collapse: collapse; }
+        th, td { padding: 8px; border: 1px solid #ccc; text-align: left; }
+        th { background: #eee; cursor: pointer; }
+        th:hover { background: #ddd; }
+    </style>
+</head>
+<body>
+    <canvas id="solarSystemCanvas"></canvas>
+    <div id="tableContainer"></div>
+    <script>
+        // Canvas setup
+        const canvas = document.getElementById('solarSystemCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Celestial objects data
+        const celestialBodies = [
+            { name: '太阳', mass: 1.989e30, orbitRadius: 0, color: 'yellow', diameter: 50 },
+            { name: '水星', mass: 3.285e23, orbitRadius: 50, color: 'gray', diameter: 5 },
+            { name: '金星', mass: 4.867e24, orbitRadius: 80, color: 'orange', diameter: 12 },
+            { name: '地球', mass: 5.972e24, orbitRadius: 110, color: 'blue', diameter: 13 },
+            { name: '火星', mass: 6.417e23, orbitRadius: 140, color: 'red', diameter: 7 },
+            { name: '木星', mass: 1.898e27, orbitRadius: 200, color: 'brown', diameter: 30 },
+            { name: '土星', mass: 5.683e26, orbitRadius: 260, color: 'yellow', diameter: 25 },
+            { name: '天王星', mass: 8.681e25, orbitRadius: 320, color: 'lightblue', diameter: 20 },
+            { name: '海王星', mass: 1.024e26, orbitRadius: 380, color: 'blue', diameter: 19 },
+            { name: '冥王星', mass: 1.309e22, orbitRadius: 440, color: 'brown', diameter: 4 }
+        ];
+
+        // Simulation variables
+        let angles = celestialBodies.map(() => 0);
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+
+        // Animation loop
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            celestialBodies.forEach((body, i) => {
+                if (i === 0) {
+                    // Draw Sun
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, body.diameter / 2, 0, Math.PI * 2);
+                    ctx.fillStyle = body.color;
+                    ctx.fill();
+                } else {
+                    // Update angle for orbiting bodies
+                    angles[i] += 0.01 / (i * 0.5);
+                    const x = centerX + body.orbitRadius * Math.cos(angles[i]);
+                    const y = centerY + body.orbitRadius * Math.sin(angles[i]);
+
+                    // Draw orbit path
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, body.orbitRadius, 0, Math.PI * 2);
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+                    ctx.stroke();
+
+                    // Draw planet
+                    ctx.beginPath();
+                    ctx.arc(x, y, body.diameter / 2, 0, Math.PI * 2);
+                    ctx.fillStyle = body.color;
+                    ctx.fill();
+                }
+            });
+
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // Table functionality
+        let sortColumn = 'name';
+        let sortOrder = 'asc';
+        let tableVisible = false;
+
+        function generateTable() {
+            const tableContainer = document.getElementById('tableContainer');
+            const table = document.createElement('table');
+            const thead = document.createElement('thead');
+            const trHead = document.createElement('tr');
+            ['name', 'mass', 'orbitRadius', 'color', 'diameter'].forEach(col => {
+                const th = document.createElement('th');
+                th.textContent = col === 'name' ? '名称' : 
+                                 col === 'mass' ? '质量 (kg)' : 
+                                 col === 'orbitRadius' ? '轨道半径 (像素)' : 
+                                 col === 'color' ? '颜色' : '直径 (像素)';
+                th.setAttribute('data-column', col);
+                trHead.appendChild(th);
+            });
+            thead.appendChild(trHead);
+            table.appendChild(thead);
+
+            const tbody = document.createElement('tbody');
+            celestialBodies.forEach(body => {
+                const tr = document.createElement('tr');
+                ['name', 'mass', 'orbitRadius', 'color', 'diameter'].forEach(col => {
+                    const td = document.createElement('td');
+                    td.textContent = body[col];
+                    tr.appendChild(td);
+                });
+                tbody.appendChild(tr);
+            });
+            table.appendChild(tbody);
+            tableContainer.innerHTML = '';
+            tableContainer.appendChild(table);
+
+            table.addEventListener('click', function(e) {
+                if (e.target.tagName === 'TH') {
+                    const column = e.target.getAttribute('data-column');
+                    if (sortColumn === column) {
+                        sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+                    } else {
+                        sortColumn = column;
+                        sortOrder = 'asc';
+                    }
+                    celestialBodies.sort((a, b) => {
+                        let valA = a[column];
+                        let valB = b[column];
+                        if (typeof valA === 'string') {
+                            return sortOrder === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+                        } else {
+                            return sortOrder === 'asc' ? valA - valB : valB - valA;
+                        }
+                    });
+                    updateTable();
+                }
+            });
+        }
+
+        function updateTable() {
+            const tbody = document.querySelector('#tableContainer table tbody');
+            tbody.innerHTML = '';
+            celestialBodies.forEach(body => {
+                const tr = document.createElement('tr');
+                ['name', 'mass', 'orbitRadius', 'color', 'diameter'].forEach(col => {
+                    const td = document.createElement('td');
+                    td.textContent = body[col];
+                    tr.appendChild(td);
+                });
+                tbody.appendChild(tr);
+            });
+        }
+
+        document.addEventListener('click', function(e) {
+            const tableContainer = document.getElementById('tableContainer');
+            if (tableContainer.contains(e.target)) return;
+
+            if (tableVisible) {
+                tableContainer.style.display = 'none';
+                tableVisible = false;
+            } else {
+                tableContainer.style.display = 'block';
+                generateTable();
+                tableVisible = true;
+            }
+        });
+    </script>
+</body>
+</html>
